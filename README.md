@@ -12,19 +12,20 @@ This repository is intentionally smaller than the commercial application. It con
 **Public reference:** pure Dart, no production credentials required  
 **License:** Apache-2.0
 
-## BNB Hack review
+## Reviewer start here
 
-If you are reviewing the BNB Hack submission, start here:
+For the fastest technical review, start with:
 
-- [`HACKATHON_EVIDENCE.md`](HACKATHON_EVIDENCE.md) — deployed BSC contracts, independently re-checked mainnet transaction proofs, production usage evidence and the public source map;
-- [`SUBMISSION.md`](SUBMISSION.md) — concise copy-ready project narrative and technical submission details;
-- [`VIDEO_SCRIPT.md`](VIDEO_SCRIPT.md) — a verification-first recording guide for the live-product demo.
+- [`ONCHAIN_EVIDENCE.md`](ONCHAIN_EVIDENCE.md) — deployed BSC contracts, successful mainnet transaction proofs, production usage evidence and the public source map;
+- [`PRODUCTION_LINEAGE.md`](PRODUCTION_LINEAGE.md) — how the public repositories relate to the already-live private production systems;
+- [`REVIEW_BRIEF.md`](REVIEW_BRIEF.md) — concise technical project narrative and reviewer-ready facts;
+- [`DEMO_GUIDE.md`](DEMO_GUIDE.md) — verification-first recording guide for the live product.
 
-The evidence page deliberately separates public blockchain facts from aggregate production evidence and does not expose customer records or production credentials.
+The evidence pages deliberately separate public blockchain facts from aggregate production evidence and do not expose customer records or production credentials.
 
 ## Why this repository exists
 
-A production client contains things that should not be copied into a public hackathon repository just to make the repository look larger: authentication wiring, operational configuration, unreleased work, private provider settings and other sensitive implementation details.
+A production client contains things that should not be copied into a public repository merely to make the repository look larger: authentication wiring, operational configuration, unreleased work, private provider settings and other sensitive implementation details.
 
 The safer approach is to publish the parts reviewers actually need to inspect and test.
 
@@ -87,6 +88,8 @@ The tests cover these invariants as executable behavior rather than documentatio
 - `example/` — runnable BNB checkout example;
 - `ARCHITECTURE.md` — system map and BNB integration boundary;
 - `PROVENANCE.md` — what came from production knowledge and what was written specifically for public review;
+- `PRODUCTION_LINEAGE.md` — ecosystem-wide private-production/public-release relationship;
+- `ONCHAIN_EVIDENCE.md` — public BSC addresses and successful transaction evidence;
 - `PUBLIC_PRIVATE_BOUNDARY.md` — explicit disclosure boundary;
 - `SECURITY.md` — security rules and responsible disclosure;
 - `scripts/check-public-repo.mjs` — CI guard against common credential and sensitive-file mistakes;
@@ -131,7 +134,9 @@ The public repositories are separated by trust boundary instead of publishing on
 - [Zynost Pay](https://github.com/umarae-dev/zynost-pay-overview) — payment client core;
 - [Zynost Gateway](https://github.com/umarae-dev/zynost-gateway-backend-overview) — merchant orders and settlement verification;
 - [Zynost Paymaster](https://github.com/umarae-dev/zynost-paymaster-overview) — ERC-4337 sponsorship layer;
-- [UQX BNB Contracts](https://github.com/umarae-dev/uqx-bnb-contracts-overview) — BNB-native token, presale and vesting contracts.
+- [UQX BNB Contracts](https://github.com/umarae-dev/uqx-bnb-contracts-overview) — BNB-native token, presale and vesting contracts;
+- [UQX Android App Overview](https://github.com/umarae-dev/uqx-app-overview) — consumer/rewards and self-custody wallet architecture;
+- [UQX Backend Overview](https://github.com/umarae-dev/uqx-backend-overview) — account/reward/referral backend architecture.
 
 Together they show the BNB-facing product path without forcing private commercial code or credentials into public source control.
 
@@ -141,7 +146,7 @@ The private Zynost client was already under active development before this publi
 
 The production app already uses Flutter/Dart and integrates research, server-owned analysis runs and Zynost Pay checkout. The Dart code published here is a clean public reference written specifically so those trust rules can be compiled, tested and reviewed without exposing live application wiring.
 
-See [`PROVENANCE.md`](PROVENANCE.md).
+See [`PROVENANCE.md`](PROVENANCE.md) and [`PRODUCTION_LINEAGE.md`](PRODUCTION_LINEAGE.md).
 
 ## CI and public-source safety
 
@@ -156,7 +161,7 @@ Every push to `main` and every pull request runs:
 
 The repository also has CODEOWNERS and a PR checklist requiring manual disclosure review. Automated scanning is useful, but it is not treated as permission to blindly copy files from production.
 
-See [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md) before a hackathon submission or tagged release.
+See [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md) before a tagged release or major public-source update.
 
 ## License
 

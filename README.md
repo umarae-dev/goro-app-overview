@@ -1,303 +1,159 @@
-# Zynost — Decision Intelligence Client
+# Zynost Client — Public Reference
 
-> **The user-facing workspace for Zynost Intelligence — research, FlowState, historical context, alerts, portfolio workflows and non-custodial crypto checkout in one Flutter application.**
+[![CI](https://github.com/umarae-dev/goro-app-overview/actions/workflows/ci.yml/badge.svg)](https://github.com/umarae-dev/goro-app-overview/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-Zynost Client is the application traders use to interact with the broader Zynost ecosystem. It connects the evidence-first Zynost Intelligence backend to a cross-platform research interface and integrates Zynost Pay for subscription checkout.
+Zynost Client is the user-facing application for the wider Zynost ecosystem. The production app is built with Flutter and connects Zynost Intelligence research workflows with Zynost Pay checkout.
 
-**Live:** https://app.zynost.com  
-**Client:** Flutter / Dart  
-**Intelligence backend:** [Zynost Intelligence](https://github.com/umarae-dev/tradeos-backend-overview)  
-**Payments:** [Zynost Pay](https://github.com/umarae-dev/zynost-pay-overview)
+This repository is intentionally smaller than the commercial application. It contains a **runnable public Dart reference** for the client trust boundaries that matter during review, plus the architecture and security documentation needed to understand how the client fits into the BNB Chain stack.
 
----
+**Live product:** https://app.zynost.com  
+**Production client:** Flutter / Dart  
+**Public reference:** pure Dart, no production credentials required  
+**License:** Apache-2.0
 
-## Product architecture
+## Why this repository exists
+
+A production client contains things that should not be copied into a public hackathon repository just to make the repository look larger: authentication wiring, operational configuration, unreleased work, private provider settings and other sensitive implementation details.
+
+The safer approach is to publish the parts reviewers actually need to inspect and test.
+
+This repository therefore demonstrates three concrete rules:
+
+- analysis results are treated as server-owned objects rather than trusted local state;
+- checkout follows an explicit state machine instead of treating a button tap as payment success;
+- subscription entitlement is granted only after confirmed settlement.
+
+## BNB Chain path
 
 ```text
-Trader
+User
   │
   ▼
-Zynost Flutter Client
+Zynost Client
   │
-  ├────────────── Zynost Intelligence API
-  │                    │
-  │                    ├── Daily Market Read
-  │                    ├── Full Scan
-  │                    ├── FlowState
-  │                    ├── Market Twin
-  │                    ├── Decision Brief
-  │                    └── Explain sessions
+  ├── research requests ──────► Zynost Intelligence
   │
-  └────────────── Zynost Pay
-                       │
-                       ├── Hosted / native checkout flow
-                       ├── BNB Smart Chain
-                       └── ERC-4337 gasless payment path
+  └── subscription checkout ──► Zynost Pay
+                                   │
+                                   ├── direct stablecoin path
+                                   └── ERC-4337 sponsored path
+                                              │
+                                              ▼
+                                       BNB Smart Chain
 ```
 
-The app is intentionally a client and orchestration surface. Market evidence, entitlement checks, credit accounting and decision intelligence remain server-side instead of being trusted to editable client state.
+BNB Smart Chain is represented by chain ID `56` in the public reference. The repository models the user-visible payment lifecycle while leaving wallet secrets, sponsorship policy, settlement verification and merchant authentication in their proper trust boundaries.
 
----
+## Runnable reference
 
-## Evidence-first intelligence in the app
+The public package has no production hostname and no credential requirement.
 
-The current product has moved beyond the older "ask many AI agents and average the answers" model.
+```bash
+dart pub get
+dart analyze
+dart test
+dart run example/main.dart
+```
 
-The active backend first builds **12 deterministic evidence modules** and then derives higher-level decision layers such as:
-
-- deterministic consensus;
-- **FlowState** market regime;
-- Flow Shift versus a previous scan;
-- institutional lenses;
-- anomaly detection;
-- thesis confirmation / invalidation conditions;
-- **Market Twin** historical analogues;
-- optional AI Decision Brief;
-- evidence-grounded follow-up explanation.
-
-The Flutter client exposes these workflows through owner-scoped analysis runs rather than treating a generated paragraph as the source of truth.
-
----
-
-## Daily Market Read
-
-The app can start an authenticated Daily Market Read for a symbol and chosen horizon.
-
-The client uses idempotency keys for analysis creation so retries and repeated taps do not have to become duplicate analysis jobs.
-
-Runs are persisted server-side and polled by ID. If the client stops waiting before a long job finishes, the analysis remains attached to the user's history rather than disappearing with the screen state.
-
----
-
-## Full Scan
-
-Pro users can launch a deeper Full Scan that returns the institutional evidence layers maintained by the backend.
-
-The client handles the run as a server-owned object with states such as queued, running, completed and failed.
-
-A reserved credit is therefore tied to a real backend run instead of being deducted by a local UI counter.
-
----
-
-## Decision Brief
-
-Once a Full Scan exists, the user can request a language-specific Decision Brief.
-
-The client does not send arbitrary market claims to the model. The backend prepares a bounded context from the stored evidence and returns a structured synthesis.
-
-This preserves the product's core boundary:
-
-> **numbers and evidence come from the data pipeline; AI explains the evidence.**
-
----
-
-## Explain sessions
-
-A completed analysis can become an evidence-grounded conversation.
-
-The user can ask follow-up questions against the same source run, and the session remains linked to that analysis rather than starting a context-free chatbot conversation.
-
-This makes the interface useful for questions such as:
-
-- why did the regime change?;
-- which evidence is weakening the thesis?;
-- what would confirm the setup?;
-- what is the largest risk in the current evidence?;
-- how does the historical analogue distribution compare with the current thesis?
-
----
-
-## FlowState alerts
-
-The client can retrieve and acknowledge server-generated FlowState alerts.
-
-This allows the product to surface a material regime change rather than requiring the user to manually compare two long reports.
-
-Alert state is owner-scoped and stored server-side.
-
----
-
-## Research workspace
-
-The application includes a broad crypto research surface around the core intelligence workflow.
-
-Current private client code contains dedicated screens for capabilities including:
-
-- **Market Radar**;
-- **Advanced Chart**;
-- **Order-Book Radar**;
-- **On-chain research**;
-- **News Intelligence**;
-- **Watchlist and alerts**;
-- **Portfolio workflows**;
-- **Payment history / billing**;
-- **Admin and account-support surfaces**.
-
-These tools are designed to give the trader context around a decision rather than forcing every action into one overloaded dashboard.
-
----
-
-## Pricing model
-
-Current client pricing presents three tiers:
-
-| Plan | Current client price | Intelligence access |
-|---|---:|---|
-| **Free** | $0 | Daily Market Reads and core market research |
-| **Pro** | $12.99/month | 250 monthly analyses, Full Scan and premium intelligence layers |
-| **Pro Plus** | $16.99/month | 350 monthly analyses and higher daily usage limits |
-
-Yearly billing is also supported in the current client.
-
-The product keeps ordinary market browsing separate from expensive premium analysis so every screen open does not consume an AI/research credit.
-
----
-
-## Zynost Pay integration
-
-Subscriptions use Zynost's own non-custodial payment stack rather than embedding wallet custody inside the intelligence client.
-
-The client connects to the separate gateway for checkout and gasless-payment operations.
-
-### BNB gasless flow
-
-For supported BNB Smart Chain checkout, the application can interact with the Zynost Pay gasless endpoints to:
-
-1. initialize the order-scoped smart-account flow;
-2. query smart-account funding status;
-3. prepare the exact sponsored operation;
-4. submit the customer's signed operation.
-
-The merchant API credential is not required in the browser-facing gasless flow; these endpoints are scoped to the individual gateway order.
+The example walks a BNB checkout through:
 
 ```text
-Zynost subscription
-       │
-       ▼
-Zynost Pay order
-       │
-       ▼
-Customer wallet / smart account
-       │
-       ▼
-ERC-4337 sponsored BNB settlement
-       │
-       ▼
-Subscription confirmation
+idle
+  → awaiting wallet
+  → awaiting signature
+  → submitted
+  → backend-confirmed settlement
 ```
 
----
+An invalid jump directly from `idle` to `confirmed` is rejected by the state machine. A submitted transaction also does not grant entitlement unless the backend-confirmed flag is true.
 
-## Important wallet boundary
+The tests cover these invariants as executable behavior rather than documentation-only claims.
 
-This repository describes the **Zynost Intelligence client**.
+## What is public here
 
-The current `goro_app` repository contains checkout wallet-connect / gasless-payment integration, but it is **not being represented here as the full standalone Zynost self-custody wallet engine**.
+- `lib/zynost_client_reference.dart` — small client trust/state reference;
+- `test/` — checkout and analysis ownership tests;
+- `example/` — runnable BNB checkout example;
+- `ARCHITECTURE.md` — system map and BNB integration boundary;
+- `PROVENANCE.md` — what came from production knowledge and what was written specifically for public review;
+- `PUBLIC_PRIVATE_BOUNDARY.md` — explicit disclosure boundary;
+- `SECURITY.md` — security rules and responsible disclosure;
+- `scripts/check-public-repo.mjs` — CI guard against common credential and sensitive-file mistakes;
+- GitHub Actions CI, CODEOWNERS and a public-source PR checklist.
 
-Any dedicated self-custody wallet product should have its own architecture/security overview once its source repository is identified and reviewed.
+## What stays private
 
-This distinction prevents the public documentation from claiming custody/key-management capabilities that are not implemented inside this specific codebase.
+The following are not required to evaluate this public reference and remain outside the repository:
 
----
+- the complete production Flutter source tree;
+- authentication/session implementation details;
+- live API configuration not needed for public review;
+- access tokens, OAuth secrets and database credentials;
+- merchant API keys and webhook signing secrets;
+- wallet private keys or recovery phrases;
+- private RPC/provider credentials;
+- production service-account material;
+- user, merchant or customer data;
+- exact anti-abuse, fraud, rate-limit and sponsorship thresholds;
+- admin-only operational routes, monitoring internals and runbooks;
+- unreleased product features.
 
-## Authentication and account security
+See [`PUBLIC_PRIVATE_BOUNDARY.md`](PUBLIC_PRIVATE_BOUNDARY.md) for the full rule set.
 
-The client integrates with server-side authentication features including:
+## Safe configuration examples
 
-- email signup/login;
-- email verification;
-- password reset;
-- Google/Facebook authentication flows;
-- TOTP two-factor authentication;
-- backup-code support;
-- server-side entitlement checks;
-- account/session validation.
-
-Sensitive plan gates and analysis entitlements are enforced by the backend rather than relying on hiding buttons in Flutter.
-
-See [`SECURITY.md`](SECURITY.md) for the public client-security boundary.
-
----
-
-## Cross-platform design
-
-The application is written in Flutter so the same product system can target multiple client environments while preserving one shared product language.
-
-The private codebase includes responsive interfaces for research, billing, checkout and account-management flows, including light/dark presentation.
-
----
-
-## Relationship to the broader ecosystem
+`.env.example` contains placeholders only:
 
 ```text
-                Zynost Intelligence
-                       │
-                       ▼
-                 Zynost Client
-                  /          \
-                 /            \
-        Research UI          Zynost Pay
-                                │
-                                ▼
-                          Zynost Paymaster
-                                │
-                                ▼
-                         BNB Smart Chain
-
-                 UQX ecosystem
-                       │
-                       └── separate BNB-native community/token layer
+PUBLIC_API_BASE_URL=https://example.invalid
+PUBLIC_BNB_RPC_URL=https://example.invalid
+PUBLIC_WALLETCONNECT_PROJECT_ID=replace-with-your-own-public-id
 ```
 
-The Zynost ecosystem deliberately separates research, payment infrastructure and token/community functionality instead of placing every trust boundary inside one application process.
+`example.invalid` is deliberately non-production. Do not replace these values in commits with anything copied from a live environment.
 
----
+## How this relates to the rest of Zynost
 
-## Technology
+The public repositories are separated by trust boundary instead of publishing one oversized production dump:
 
-Flutter · Dart · HTTP APIs · Firebase messaging · local notifications · QR rendering · web/native responsive UI · Zynost Intelligence API · Zynost Pay API
+- [Zynost Intelligence](https://github.com/umarae-dev/tradeos-backend-overview) — evidence and decision-intelligence reference;
+- [Zynost Pay](https://github.com/umarae-dev/zynost-pay-overview) — payment client core;
+- [Zynost Gateway](https://github.com/umarae-dev/zynost-gateway-backend-overview) — merchant orders and settlement verification;
+- [Zynost Paymaster](https://github.com/umarae-dev/zynost-paymaster-overview) — ERC-4337 sponsorship layer;
+- [UQX BNB Contracts](https://github.com/umarae-dev/uqx-bnb-contracts-overview) — BNB-native token, presale and vesting contracts.
 
----
+Together they show the BNB-facing product path without forcing private commercial code or credentials into public source control.
 
-## Production vs. public repository boundary
+## Production lineage
 
-This repository is a **public product and architecture overview**, not the production Flutter source tree.
+The private Zynost client was already under active development before this public reference was prepared. The repository does not pretend that its public commit history is the entire product-development history.
 
-### Public here
+The production app already uses Flutter/Dart and integrates research, server-owned analysis runs and Zynost Pay checkout. The Dart code published here is a clean public reference written specifically so those trust rules can be compiled, tested and reviewed without exposing live application wiring.
 
-- client/product architecture;
-- intelligence workflow;
-- evidence-first positioning;
-- BNB checkout integration model;
-- account-security capabilities;
-- product boundaries;
-- relationship to other Zynost components.
+See [`PROVENANCE.md`](PROVENANCE.md).
 
-### Kept private
+## CI and public-source safety
 
-- production Flutter source;
-- authentication implementation details not required for public review;
-- API wiring and internal application state;
-- user data;
-- production configuration;
-- provider credentials;
-- anti-abuse implementation;
-- private product experiments and unreleased features.
+Every push to `main` and every pull request runs:
 
-No access token, API secret, seed phrase, private key or user-private information should ever be committed to this repository.
+- dependency installation;
+- credential/sensitive-file guard;
+- Dart format verification;
+- static analysis;
+- unit tests;
+- the runnable BNB reference example.
 
----
+The repository also has CODEOWNERS and a PR checklist requiring manual disclosure review. Automated scanning is useful, but it is not treated as permission to blindly copy files from production.
 
-## Open-source / BNB developer track
+See [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md) before a hackathon submission or tagged release.
 
-This commercial client remains private. Zynost's hackathon/open-source work should live in a separately scoped BNB developer repository that can be safely reproduced without publishing the complete production client or backend.
+## License
 
-This overview will link to that repository once the BNB component is ready.
+Apache License 2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
 
----
+The source license does not grant rights to use Zynost, Zynost Pay, UQX or associated branding as trademarks beyond normal attribution and description of origin.
 
-## Status
+## Security
 
-**Active production development.**
-
-The current private client integrates the evidence-first intelligence API, persisted analysis runs, Decision Briefs, Explain sessions, FlowState alerts, subscription checkout and BNB gasless-payment flows.
+Do not open a public issue containing credentials, wallet secrets, user data or live exploit details. See [`SECURITY.md`](SECURITY.md) for the disclosure process.

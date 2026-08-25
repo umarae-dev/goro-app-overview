@@ -12,6 +12,16 @@ This repository is intentionally smaller than the commercial application. It con
 **Public reference:** pure Dart, no production credentials required  
 **License:** Apache-2.0
 
+## BNB Hack review
+
+If you are reviewing the BNB Hack submission, start here:
+
+- [`HACKATHON_EVIDENCE.md`](HACKATHON_EVIDENCE.md) — deployed BSC contracts, independently re-checked mainnet transaction proofs, production usage evidence and the public source map;
+- [`SUBMISSION.md`](SUBMISSION.md) — concise copy-ready project narrative and technical submission details;
+- [`VIDEO_SCRIPT.md`](VIDEO_SCRIPT.md) — a verification-first recording guide for the live-product demo.
+
+The evidence page deliberately separates public blockchain facts from aggregate production evidence and does not expose customer records or production credentials.
+
 ## Why this repository exists
 
 A production client contains things that should not be copied into a public hackathon repository just to make the repository look larger: authentication wiring, operational configuration, unreleased work, private provider settings and other sensitive implementation details.

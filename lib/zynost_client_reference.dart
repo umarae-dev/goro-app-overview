@@ -109,5 +109,6 @@ class PublicClientPolicy {
 
   bool canTrustClientClaim({required bool serverVerified}) => serverVerified;
 
-  String unavailableLabel(bool available) => available ? 'available' : 'unavailable';
+  String unavailableLabel(bool available) =>
+      available ? 'available' : 'unavailable';
 }

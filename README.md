@@ -16,12 +16,12 @@ This repository is intentionally smaller than the commercial application. It con
 
 For the fastest technical review, start with:
 
-- [`ONCHAIN_EVIDENCE.md`](ONCHAIN_EVIDENCE.md) — deployed BSC contracts, successful mainnet transaction proofs, production usage evidence and the public source map;
+- [`ONCHAIN_EVIDENCE.md`](ONCHAIN_EVIDENCE.md) — routing page to the canonical contract, settlement and Paymaster evidence repositories;
 - [`PRODUCTION_LINEAGE.md`](PRODUCTION_LINEAGE.md) — how the public repositories relate to the already-live private production systems;
-- [`REVIEW_BRIEF.md`](REVIEW_BRIEF.md) — concise technical project narrative and reviewer-ready facts;
+- [`REVIEW_BRIEF.md`](REVIEW_BRIEF.md) — concise technical project narrative and ownership map;
 - [`DEMO_GUIDE.md`](DEMO_GUIDE.md) — verification-first recording guide for the live product.
 
-The evidence pages deliberately separate public blockchain facts from aggregate production evidence and do not expose customer records or production credentials.
+This client repository does **not** duplicate UQX contract addresses, UQX transaction hashes or production settlement transaction lists. Exact evidence lives in the subsystem repository that owns it.
 
 ## Why this repository exists
 
@@ -54,7 +54,7 @@ Zynost Client
                                        BNB Smart Chain
 ```
 
-BNB Smart Chain is represented by chain ID `56` in the public reference. The repository models the user-visible payment lifecycle while leaving wallet secrets, sponsorship policy, settlement verification and merchant authentication in their proper trust boundaries.
+BNB Smart Chain is represented by chain ID `56` in the public reference. The repository models the user-visible payment lifecycle while leaving wallet secrets, sponsorship policy, settlement verification, contract ownership and merchant authentication in their proper trust boundaries.
 
 ## Runnable reference
 
@@ -86,10 +86,10 @@ The tests cover these invariants as executable behavior rather than documentatio
 - `lib/zynost_client_reference.dart` — small client trust/state reference;
 - `test/` — checkout and analysis ownership tests;
 - `example/` — runnable BNB checkout example;
-- `ARCHITECTURE.md` — system map and BNB integration boundary;
+- `ARCHITECTURE.md` — client/system map and BNB integration boundary;
 - `PROVENANCE.md` — what came from production knowledge and what was written specifically for public review;
 - `PRODUCTION_LINEAGE.md` — ecosystem-wide private-production/public-release relationship;
-- `ONCHAIN_EVIDENCE.md` — public BSC addresses and successful transaction evidence;
+- `ONCHAIN_EVIDENCE.md` — canonical evidence routing/index page;
 - `PUBLIC_PRIVATE_BOUNDARY.md` — explicit disclosure boundary;
 - `SECURITY.md` — security rules and responsible disclosure;
 - `scripts/check-public-repo.mjs` — CI guard against common credential and sensitive-file mistakes;
@@ -126,19 +126,18 @@ PUBLIC_WALLETCONNECT_PROJECT_ID=replace-with-your-own-public-id
 
 `example.invalid` is deliberately non-production. Do not replace these values in commits with anything copied from a live environment.
 
-## How this relates to the rest of Zynost
-
-The public repositories are separated by trust boundary instead of publishing one oversized production dump:
+## Canonical repository map
 
 - [Zynost Intelligence](https://github.com/umarae-dev/tradeos-backend-overview) — evidence and decision-intelligence reference;
-- [Zynost Pay](https://github.com/umarae-dev/zynost-pay-overview) — payment client core;
-- [Zynost Gateway](https://github.com/umarae-dev/zynost-gateway-backend-overview) — merchant orders and settlement verification;
+- [Zynost Client](https://github.com/umarae-dev/goro-app-overview) — client trust/state reference;
+- [Zynost Pay](https://github.com/umarae-dev/zynost-pay-overview) — production-derived payment/wallet browser client core;
+- [Zynost Gateway](https://github.com/umarae-dev/zynost-gateway-backend-overview) — merchant orders, settlement verification and settlement evidence;
 - [Zynost Paymaster](https://github.com/umarae-dev/zynost-paymaster-overview) — ERC-4337 sponsorship layer;
-- [UQX BNB Contracts](https://github.com/umarae-dev/uqx-bnb-contracts-overview) — BNB-native token, presale and vesting contracts;
+- [UQX BNB Contracts](https://github.com/umarae-dev/uqx-bnb-contracts-overview) — UQX contracts, deployments and UQX on-chain transaction evidence;
 - [UQX Android App Overview](https://github.com/umarae-dev/uqx-app-overview) — consumer/rewards and self-custody wallet architecture;
 - [UQX Backend Overview](https://github.com/umarae-dev/uqx-backend-overview) — account/reward/referral backend architecture.
 
-Together they show the BNB-facing product path without forcing private commercial code or credentials into public source control.
+Together they show the BNB-facing product path without forcing private commercial code or credentials into public source control or duplicating subsystem evidence across repositories.
 
 ## Production lineage
 
@@ -150,16 +149,7 @@ See [`PROVENANCE.md`](PROVENANCE.md) and [`PRODUCTION_LINEAGE.md`](PRODUCTION_LI
 
 ## CI and public-source safety
 
-Every push to `main` and every pull request runs:
-
-- dependency installation;
-- credential/sensitive-file guard;
-- Dart format verification;
-- static analysis;
-- unit tests;
-- the runnable BNB reference example.
-
-The repository also has CODEOWNERS and a PR checklist requiring manual disclosure review. Automated scanning is useful, but it is not treated as permission to blindly copy files from production.
+Every push to `main` and every pull request runs dependency installation, the credential/sensitive-file guard, Dart format verification, static analysis, unit tests and the runnable BNB reference example.
 
 See [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md) before a tagged release or major public-source update.
 

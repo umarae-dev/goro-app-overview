@@ -6,7 +6,7 @@
 
 ## One-line summary
 
-Zynost turns fragmented crypto market evidence into one explainable Decision Brief, then connects paid access to non-custodial BNB Smart Chain settlement and a BNB-native UQX token ecosystem.
+Zynost turns fragmented crypto market evidence into one explainable Decision Brief, then connects paid access to non-custodial BNB Smart Chain settlement and a BNB-native UQX ecosystem.
 
 ## Product status
 
@@ -23,7 +23,7 @@ Live product surfaces:
 
 Crypto users jump between charts, order books, news, on-chain data and conflicting signals. The difficult part is deciding which evidence matters, where evidence conflicts, and what would invalidate a thesis.
 
-At the same time, crypto-native products still make access and payment unnecessarily fragmented. A useful research product should be able to serve a user, settle access on-chain without taking custody of the user's wallet, and expose reusable infrastructure that can be independently inspected.
+Crypto-native products also make access and payment unnecessarily fragmented. Zynost links research access to non-custodial on-chain settlement while keeping each subsystem independently reviewable.
 
 ## Solution
 
@@ -36,59 +36,24 @@ Zynost combines four layers:
 
 ## BNB Smart Chain integration
 
-Current BNB-facing implementation includes:
-
-- live USDT subscription settlement on BSC;
-- an ERC-4337 v0.6 Verifying Paymaster;
-- UQX fixed-supply token;
-- UQX Presale with stablecoin payment and per-buyer on-chain allocation;
-- UQX Vesting;
-- timelock and Safe-based governance architecture;
-- Android self-custody BNB wallet support in the private UQX application.
+The live ecosystem includes BSC subscription settlement, ERC-4337 gas sponsorship, UQX token/presale/vesting contracts, governance controls and a BNB-first self-custody wallet path.
 
 Network: **BNB Smart Chain mainnet, chain ID 56**.
 
-## Main deployed contract
+Exact addresses and transaction hashes are intentionally **not duplicated in this client repository**. Use [`ONCHAIN_EVIDENCE.md`](ONCHAIN_EVIDENCE.md) as the evidence router to the canonical subsystem repositories.
 
-**UQX Presale**
+## Canonical repository ownership
 
-`0xe2f3931Be4A5e1f7C8266C3312C015E426f625dD`
+- **Decision intelligence:** `tradeos-backend-overview`
+- **Client trust/state:** `goro-app-overview`
+- **Checkout/wallet browser core:** `zynost-pay-overview`
+- **Merchant orders + BSC settlement:** `zynost-gateway-backend-overview`
+- **ERC-4337 Paymaster:** `zynost-paymaster-overview`
+- **UQX contracts, deployments and UQX transaction evidence:** `uqx-bnb-contracts-overview`
+- **UQX Android architecture:** `uqx-app-overview`
+- **UQX backend architecture:** `uqx-backend-overview`
 
-Explorer:
-
-https://bscscan.com/address/0xe2f3931Be4A5e1f7C8266C3312C015E426f625dD
-
-## Main public transaction proof
-
-Real presale purchase:
-
-`0xc8577b9043c1c8f1c8e89907c80a238d080afea114af050c83b86453b04e0238`
-
-Explorer:
-
-https://bscscan.com/tx/0xc8577b9043c1c8f1c8e89907c80a238d080afea114af050c83b86453b04e0238
-
-Recorded result: successful BSC mainnet `buy(address,uint256)` call with **1 USDT paid and 200 UQX allocated**.
-
-Additional transaction and deployment evidence is documented in [`ONCHAIN_EVIDENCE.md`](ONCHAIN_EVIDENCE.md).
-
-## Production settlement evidence
-
-The production billing system records completed Zynost subscription invoices paid in USDT on BSC. Two payments were independently matched to public BSC transfers without publishing customer identities:
-
-- `0x2756bce009233683be9fd9f9828df27f4c2599c7070a4423c8bbe8d7c0e65a21` — 3.01 USDT;
-- `0x5a5581669cb039e203a8a9a941bc52cd88adaad55cfcd093cc20816f0d96f208` — 3.00 USDT.
-
-## Public repositories
-
-- https://github.com/umarae-dev/tradeos-backend-overview
-- https://github.com/umarae-dev/goro-app-overview
-- https://github.com/umarae-dev/zynost-pay-overview
-- https://github.com/umarae-dev/zynost-gateway-backend-overview
-- https://github.com/umarae-dev/zynost-paymaster-overview
-- https://github.com/umarae-dev/uqx-bnb-contracts-overview
-- https://github.com/umarae-dev/uqx-app-overview
-- https://github.com/umarae-dev/uqx-backend-overview
+This ownership model prevents judges or reviewers from seeing the same contract or transaction evidence maintained in multiple places.
 
 ## What reviewers can run
 
@@ -114,9 +79,9 @@ See [`PRODUCTION_LINEAGE.md`](PRODUCTION_LINEAGE.md) and the individual reposito
 ## Reviewer path
 
 1. Read [`PRODUCTION_LINEAGE.md`](PRODUCTION_LINEAGE.md).
-2. Open [`ONCHAIN_EVIDENCE.md`](ONCHAIN_EVIDENCE.md).
-3. Inspect the UQX contract repository and contract tests.
-4. Inspect the Zynost Pay and Gateway production-derived cores.
-5. Inspect the Paymaster source/tests.
-6. Run the documented public test suites and verify green CI.
-7. Open the live product surfaces and compare them with the documented architecture.
+2. Read [`ONCHAIN_EVIDENCE.md`](ONCHAIN_EVIDENCE.md) to choose the canonical subsystem repository.
+3. Inspect `uqx-bnb-contracts-overview` for UQX contracts/deployments/evidence.
+4. Inspect `zynost-gateway-backend-overview` for settlement evidence and production-derived settlement logic.
+5. Inspect `zynost-paymaster-overview` for ERC-4337 sponsorship source/tests.
+6. Inspect `zynost-pay-overview` for the production-derived checkout/wallet client core.
+7. Run the documented public test suites, verify green CI, and compare the live products with the documented architecture.

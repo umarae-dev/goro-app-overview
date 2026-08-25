@@ -1,0 +1,16 @@
+.dart_tool/
+.packages
+.pub/
+build/
+coverage/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+credentials.json
+service-account*.json

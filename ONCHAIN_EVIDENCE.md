@@ -1,141 +1,70 @@
-# BNB Smart Chain On-Chain Evidence
+# BNB Smart Chain Evidence Router
 
-This page records public BNB Smart Chain evidence for the live Zynost/UQX ecosystem. It is intentionally product-neutral documentation rather than event-specific marketing material.
+This page is intentionally a **routing/index page**, not a duplicate evidence store.
 
-## Network
+Zynost spans several public repositories with separate trust boundaries. Each class of on-chain evidence has one canonical home so reviewers do not need to compare repeated addresses or transaction lists across repositories.
 
-- BNB Smart Chain mainnet
-- Chain ID: `56`
+## Canonical evidence ownership
 
-## Deployed components
+### UQX token, presale, vesting and governance
 
-| Component | Address | Role |
-| --- | --- | --- |
-| UQX Token | `0x68B1Eb4b344cc86750bd9Ac9e3f4F53B3aF48A28` | Fixed-supply UQX token |
-| UQX Vesting | `0xB3d0CD3c7a73F20689223AdF6223F53A8C245326` | Reward / vesting pool |
-| UQX Presale | `0xe2f3931Be4A5e1f7C8266C3312C015E426f625dD` | Stablecoin purchase and buyer allocation |
-| TimelockController | `0x9dE032505A10F8A9d4D9445A0cEa9bF49320F569` | Delayed governance control |
-| Safe multisig | `0x7E7bAf58129dc3e1992ef2cAfbD981391D522C97` | Governance proposer |
-| Zynost Verifying Paymaster | `0x5a7593436ddd1211ce68958aedfb3864ef3f2848` | ERC-4337 gas sponsorship |
-| ERC-4337 EntryPoint v0.6 | `0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789` | Shared account-abstraction EntryPoint |
+Canonical repository:
 
-The UQX contracts were deployed on 18 August 2026. Public deployment details and source live in `uqx-bnb-contracts-overview`.
+https://github.com/umarae-dev/uqx-bnb-contracts-overview
 
-## Successful mainnet transaction evidence
+Use:
 
-### UQX presale purchase
+- `DEPLOYMENTS.md` for deployed UQX contract addresses, funded pools and governance state;
+- `ONCHAIN_EVIDENCE.md` for UQX presale purchase, configuration, deployment, governance-handoff and vesting-funding transaction proofs;
+- `contracts/` and `test/uqx/` for production-safe Solidity source and production-derived tests.
 
-Transaction:
+No UQX contract address table or UQX transaction list is duplicated here.
 
-`0xc8577b9043c1c8f1c8e89907c80a238d080afea114af050c83b86453b04e0238`
+### Zynost Pay production settlement
 
-Explorer:
+Canonical repository:
 
-https://bscscan.com/tx/0xc8577b9043c1c8f1c8e89907c80a238d080afea114af050c83b86453b04e0238
+https://github.com/umarae-dev/zynost-gateway-backend-overview
 
-Recorded facts:
+Use `SETTLEMENT_EVIDENCE.md` for the public BSC subscription-settlement transaction proofs and the rest of that repository for the production-derived settlement-verification and merchant-order core.
 
-- status: success;
-- block: `116626859`;
-- time: `2026-08-18 08:47:31 UTC`;
-- call: UQX Presale `buy(address,uint256)`;
-- payment asset: BSC USDT `0x55d398326f99059ff775485246999027b3197955`;
-- paid: **1 USDT**;
-- allocation: **200 UQX**.
+No subscription transaction list is duplicated here.
 
-### Presale payment-token activation
+### ERC-4337 gas sponsorship
 
-Transaction:
+Canonical repository:
 
-`0x2968e14c1781b94e32aa1715dd38486001417c8400b1fe1453d9917bfafc599a`
+https://github.com/umarae-dev/zynost-paymaster-overview
 
-Explorer:
+Use that repository for `ZynostVerifyingPaymaster.sol`, production Paymaster tests, deployment/maintenance scripts and ERC-4337 trust-boundary documentation.
 
-https://bscscan.com/tx/0x2968e14c1781b94e32aa1715dd38486001417c8400b1fe1453d9917bfafc599a
+### Browser checkout / wallet client
 
-A second successful payment-token configuration transaction is visible at:
+Canonical repository:
 
-`0x99c073cd0ac057a03ae0d9582dca95da60436b5eb659bdfe376cbb1df243590c`
+https://github.com/umarae-dev/zynost-pay-overview
 
-Explorer:
+Use that repository for the production-derived wallet bridge, transfer construction and gasless-signing client core.
 
-https://bscscan.com/tx/0x99c073cd0ac057a03ae0d9582dca95da60436b5eb659bdfe376cbb1df243590c
+## Why this page exists
 
-### Presale deployment
+`goro-app-overview` represents the Zynost client/application trust model. It should show **how the components connect**, not become a second copy of contract, settlement or Paymaster evidence owned by other repositories.
 
-Transaction:
-
-`0x5d781e7aa9e7b4b26beac140b36f0a524b9c100f9dd0a3a29da01b17b5a83e93`
-
-Explorer:
-
-https://bscscan.com/tx/0x5d781e7aa9e7b4b26beac140b36f0a524b9c100f9dd0a3a29da01b17b5a83e93
-
-### Governance handoff
-
-Transaction:
-
-`0xa60cd2c97f6944a5b64b7a40bc2aee0dc20754bdb343597a1698356a224e3a17`
-
-Explorer:
-
-https://bscscan.com/tx/0xa60cd2c97f6944a5b64b7a40bc2aee0dc20754bdb343597a1698356a224e3a17
-
-### UQX reward-vesting funding
-
-Transaction:
-
-`0xd7b7d5bc4d927e4df29fe56a079deada0ac560505990d24e6ddd112048caf5cf`
-
-Explorer:
-
-https://bscscan.com/tx/0xd7b7d5bc4d927e4df29fe56a079deada0ac560505990d24e6ddd112048caf5cf
-
-Recorded facts include successful funding of the deployed UQX Vesting pool.
-
-## Real Zynost subscription settlement on BSC
-
-Production billing records show completed subscription invoices settled with USDT on BNB Smart Chain. Two payments were independently matched to their public transfers without publishing customer identities.
-
-### Subscription payment A
-
-`0x2756bce009233683be9fd9f9828df27f4c2599c7070a4423c8bbe8d7c0e65a21`
-
-- amount: **3.01 USDT**
-- status: success
-- BSC mainnet
-
-Explorer:
-
-https://bscscan.com/tx/0x2756bce009233683be9fd9f9828df27f4c2599c7070a4423c8bbe8d7c0e65a21
-
-### Subscription payment B
-
-`0x5a5581669cb039e203a8a9a941bc52cd88adaad55cfcd093cc20816f0d96f208`
-
-- amount: **3.00 USDT**
-- status: success
-- BSC mainnet
-
-Explorer:
-
-https://bscscan.com/tx/0x5a5581669cb039e203a8a9a941bc52cd88adaad55cfcd093cc20816f0d96f208
+Reviewers should follow the canonical repository links above whenever they need exact addresses, hashes, contract source or settlement proof.
 
 ## Public source map
 
-| Repository | Publicly reviewable material |
+| Area | Canonical repository |
 | --- | --- |
-| https://github.com/umarae-dev/tradeos-backend-overview | Intelligence architecture and runnable evidence reference |
-| https://github.com/umarae-dev/goro-app-overview | Client trust-state reference and ecosystem documentation |
-| https://github.com/umarae-dev/zynost-pay-overview | Production-derived wallet / checkout client core |
-| https://github.com/umarae-dev/zynost-gateway-backend-overview | Production-safe merchant order and settlement core |
-| https://github.com/umarae-dev/zynost-paymaster-overview | ERC-4337 Paymaster contract, tests and scripts |
-| https://github.com/umarae-dev/uqx-bnb-contracts-overview | UQX token, presale, vesting contracts and deployment records |
-| https://github.com/umarae-dev/uqx-app-overview | UQX Android product / wallet architecture overview |
-| https://github.com/umarae-dev/uqx-backend-overview | UQX backend accounting/security architecture overview |
+| Zynost decision intelligence | https://github.com/umarae-dev/tradeos-backend-overview |
+| Zynost client trust/state | https://github.com/umarae-dev/goro-app-overview |
+| Checkout/wallet client core | https://github.com/umarae-dev/zynost-pay-overview |
+| Merchant orders + settlement | https://github.com/umarae-dev/zynost-gateway-backend-overview |
+| ERC-4337 Paymaster | https://github.com/umarae-dev/zynost-paymaster-overview |
+| UQX contracts + UQX on-chain evidence | https://github.com/umarae-dev/uqx-bnb-contracts-overview |
+| UQX Android architecture | https://github.com/umarae-dev/uqx-app-overview |
+| UQX backend architecture | https://github.com/umarae-dev/uqx-backend-overview |
 
-## Privacy and verification boundary
+## Verification principle
 
-This file intentionally contains only public chain data and privacy-safe aggregate production evidence. It does not include customer emails, wallet ownership mappings, private API records, production credentials, seed phrases, private keys or operational security controls.
-
-Anyone reviewing these claims should independently open the public transaction hashes and deployed addresses in a BNB Smart Chain explorer before relying on them.
+A reviewer should not need to decide which duplicated copy is authoritative. Exact evidence lives once, in the repository that owns the relevant subsystem; other repositories link to it.

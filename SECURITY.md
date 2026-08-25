@@ -1,38 +1,56 @@
-# Security — Zynost Client Overview
+# Security — Zynost Client Public Reference
 
-This repository is a public architecture overview. It intentionally does not contain the production Flutter application source, private backend logic, user data, access tokens, API credentials, wallet secrets or infrastructure credentials.
+This repository is intentionally separated from the private production Zynost client. It contains public documentation and a small runnable reference package that demonstrates safe client-side state boundaries without exposing production credentials, live service wiring, user data, private endpoints, or security-sensitive operational logic.
 
-## Public security principles
+## Security boundary
 
-The client is designed around several boundaries:
+The public reference assumes:
 
-- authentication and entitlement checks are enforced server-side;
-- analysis runs are owner-scoped on the backend;
-- expensive/premium actions use backend-controlled usage and credit accounting;
-- 2FA-protected sessions require a second factor before a full access token is issued;
-- password-recovery and email-verification flows avoid exposing unnecessary account-existence information;
-- browser-facing BNB gasless checkout calls are scoped to a specific payment order rather than shipping a merchant API credential to the browser;
-- research calculations and stored evidence remain backend-owned rather than trusting editable client state.
+- authentication and entitlement decisions are enforced by a trusted backend;
+- analysis jobs are server-owned and user-scoped;
+- the client never treats editable local state as proof of payment, subscription entitlement, balance, or completed analysis;
+- BNB checkout state is represented as a client state machine, while payment verification and sponsorship policy remain outside the public client reference;
+- wallet or payment signatures must be user-approved and should never require a seed phrase or private key to leave the wallet;
+- unavailable data is shown as unavailable rather than being silently replaced with fabricated success state.
 
-## What must never be published
+## Never publish
 
-Do not commit or disclose:
+Do not commit or paste any of the following into this repository, issues, pull requests, Actions logs, screenshots, or examples:
 
-- access or refresh tokens;
-- private keys or seed phrases;
-- API provider credentials;
-- database credentials;
-- production environment files;
-- private user information;
-- internal anti-abuse rules where disclosure would materially weaken controls;
-- unreleased security-sensitive implementation details.
+- `.env` files from production;
+- access tokens, refresh tokens, session cookies, JWT signing secrets, OAuth client secrets;
+- wallet private keys, seed phrases, mnemonics, keystore exports, signing credentials;
+- merchant API keys or webhook signing secrets;
+- database URLs, usernames, passwords, connection strings, backups, or dumps;
+- private RPC credentials or provider API keys;
+- production Firebase service-account material;
+- customer or merchant PII;
+- live admin endpoints or internal-only operational routes;
+- fraud, abuse, rate-limit, or sponsorship thresholds whose disclosure would weaken production controls;
+- internal runbooks, incident procedures, or unreleased security-sensitive features.
 
-## Wallet boundary
+## Safe example values
 
-The private `goro_app` codebase contains wallet-connect and gasless-checkout integration. This public repository does not claim that `goro_app` itself is the complete standalone self-custody wallet/key-management engine.
+Documentation and tests must use obvious non-production placeholders, for example:
 
-Any dedicated wallet repository should undergo a separate review covering key generation, key storage, signing, chain configuration, transaction simulation, backup/recovery and threat modeling before its security architecture is documented publicly.
+```text
+PUBLIC_API_BASE_URL=https://example.invalid
+PUBLIC_BNB_RPC_URL=https://example.invalid
+PUBLIC_WALLETCONNECT_PROJECT_ID=replace-with-your-own-public-id
+```
 
-## Reporting
+Never replace placeholders with a credential copied from production.
 
-If you believe you have discovered a security issue in a Zynost product, do not publish exploit details or secrets in a public GitHub issue. Contact the project privately and provide the minimum reproduction information required to investigate.
+## Wallet and payment boundary
+
+This repository does not contain a standalone self-custody wallet engine. The production client integrates wallet connection and Zynost Pay flows, but key generation, key storage, production transaction policy, private API wiring, sponsorship policy, settlement verification, and merchant authentication are outside this public repository.
+
+For BNB Chain payment infrastructure, see the separately scoped public repositories for Zynost Pay, Zynost Paymaster, and the Zynost Gateway API.
+
+## Responsible disclosure
+
+If you believe you found a security issue affecting a Zynost product, do not post exploit details, credentials, user data, or live attack instructions in a public issue.
+
+Contact: **security@zynost.com**
+
+Provide only the minimum information needed to reproduce the issue safely. Do not access funds, user data, merchant data, or systems beyond what you are explicitly authorized to test.

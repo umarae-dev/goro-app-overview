@@ -1,6 +1,6 @@
-# Architecture
+# Zynost Client Architecture
 
-Zynost Client is the user-facing application in the wider Zynost stack. The private production app is Flutter-based. This public repository exposes only a small, dependency-light reference for the trust boundaries that matter to reviewers.
+Zynost Client is the user-facing application for Zynost Intelligence and subscription access. The private production client is Flutter-based; this public repository publishes a compact reference for the trust boundaries that are useful to reviewers.
 
 ```text
 User
@@ -8,61 +8,76 @@ User
   ▼
 Zynost Client
   │
-  ├── research / analysis requests
+  ├── research / decision-intelligence requests
   │        │
   │        ▼
   │   Zynost Intelligence backend
-  │        └── server-owned evidence, runs and entitlements
+  │        ├── source-backed evidence
+  │        ├── deterministic intelligence layers
+  │        └── optional synthesis
   │
   └── subscription checkout
            │
            ▼
        Zynost Pay
            │
-           ├── direct stablecoin settlement
-           └── ERC-4337 sponsored path
+           ├── direct supported settlement path
+           └── supported sponsored path
                     │
                     ▼
-             BNB Smart Chain
+             blockchain settlement
 ```
 
-## Client trust rules
+## Intelligence boundary
+
+The client does not calculate market measurements locally and does not treat a fixed count of AI agents as the product architecture. Completed analysis objects come from the server-owned decision-intelligence pipeline, where evidence and deterministic market state are formed before optional user-facing synthesis.
 
 The client is not authoritative for:
 
+- provider-derived market measurements;
+- analysis ownership/completion;
+- premium credit accounting;
 - payment confirmation;
 - subscription entitlement;
-- analysis ownership;
-- premium credit accounting;
 - merchant settlement;
-- gas sponsorship policy;
+- gas-sponsorship policy;
 - chain settlement verification.
 
-Those decisions stay server-side or on-chain.
+## Public reference rules
 
-## Public reference
-
-`lib/zynost_client_reference.dart` demonstrates three small rules used throughout the product architecture:
+`lib/zynost_client_reference.dart` demonstrates three trust rules:
 
 1. an analysis result is renderable only after ownership and completion are established;
-2. checkout follows an explicit state machine rather than jumping from a button tap directly to success;
+2. checkout follows an explicit state machine rather than jumping from button tap to success;
 3. entitlement is granted only after backend-confirmed settlement.
 
-The example intentionally contains no HTTP client, production hostname, API route, wallet credential, merchant secret, RPC credential, or signing implementation.
+The example intentionally contains no production credential, wallet secret, merchant secret, private RPC credential or signing key.
 
-## BNB Chain role
+## UQX boundary
 
-BNB Smart Chain is the primary chain demonstrated by the payment path. The public reference recognizes chain ID `56` and models the user-visible checkout lifecycle. Actual wallet connection, signature transport, sponsorship policy, settlement verification and merchant callbacks are implemented in separately scoped production services and are not duplicated here.
+UQX is a separate self-custody Web3 wallet product. The native UQX Android application owns its device-side wallet trust boundary; Zynost Client does not need or receive the UQX recovery phrase/private key in order to request intelligence or subscription state.
 
-Related public repositories:
+```text
+UQX Android wallet
+  ├── device-owned BIP39/EVM credentials
+  └── supported BNB Smart Chain state
 
-- `zynost-pay-overview` — browser payment client core;
-- `zynost-paymaster-overview` — ERC-4337 sponsorship contracts and controls;
+Zynost Client
+  ├── decision-intelligence UX
+  └── subscription UX
+```
+
+Older mining/reward/referral terminology in legacy UQX services should not be copied into current Zynost Client branding.
+
+## Related public repositories
+
+- `tradeos-backend-overview` — Zynost decision-intelligence architecture;
+- `zynost-pay-overview` — payment client reference;
+- `zynost-paymaster-overview` — ERC-4337 sponsorship controls;
 - `zynost-gateway-backend-overview` — merchant orders and settlement verification;
-- `uqx-bnb-contracts-overview` — BNB-native UQX contracts.
+- `uqx-app-overview` — UQX self-custody Android wallet architecture;
+- `uqx-bnb-contracts-overview` — UQX BNB Smart Chain contracts and deployment evidence.
 
 ## Why the production Flutter tree is private
 
-The full client contains authentication wiring, operational configuration, unreleased product work and other implementation details that are unnecessary for judging this public component and would expand the attack surface if copied indiscriminately.
-
-The public repository therefore demonstrates architecture and testable invariants without pretending to be a byte-for-byte mirror of the commercial application.
+The full client contains authentication wiring, operational configuration, unreleased product work and other implementation details unnecessary for public review. The public repository demonstrates architecture and testable invariants without presenting itself as a byte-for-byte mirror of the commercial application.
